@@ -1,0 +1,215 @@
+﻿<html>
+<head>
+   <style>
+      table {
+      margin: auto;
+      }
+      table, th, td {
+         border: 1px solid black;
+         border-collapse: collapse; 
+      }
+      td, th {
+         padding: 10px;
+      }
+   </style>
+</head>
+<body onLoad="convert( )">
+   <!--	
+   <h2>Convert JSON data into a html table using Javascript</h2>
+   <p>Click the following button to convert JSON results into HTML table</p><br>
+   <button id="btn" onclick="convert( )"> Click Here </button> <br>
+   -->
+   <center><h2>Сводная таблица накопительных счетов</h2></center>
+   <form>
+   <center>
+   <input id="noСonditions" type="checkbox" checked="checked" onclick="filterClick()">
+   <label for="noСonditions">Без условий</label>
+   <input id="spend" type="checkbox" checked="checked" onclick="filterClick()">
+   <label for="spend">С тратами</label>
+   <input id="newClient" type="checkbox" checked="checked" onclick="filterClick()">
+   <label for="newClient">Новый клиент</label>
+   <input id="subscr" type="checkbox" checked="checked" onclick="filterClick()">
+   <label for="subscr">С подпиской</label>
+   
+   <br>
+   
+   <input id="daily" checked="checked" type="checkbox" onclick="filterClick()">
+   <label for="daily">Ежедневный</label>
+   <input id="minimal" checked="checked" type="checkbox" onclick="filterClick()">
+   <label for="minimal">Минимальный</label>
+   <center>
+   <p id="text1" style="display:none">Checkbox is CHECKED!</p>
+   </form>
+   <!-- <h3> Resulting Table: </h3> -->
+   <div id="container"></div>
+   <script>
+
+      function filterClick() {
+	  //var checkBox2 = document.getElementById("checkbox2");
+	  //if (checkBox2.checked == true) {alert(3 | 4);}
+	  // Get the checkbox
+	  var noСonditions = document.getElementById("noСonditions");
+	  var spend = document.getElementById("spend");
+	  var subscr = document.getElementById("subscr");
+	  var newClient = document.getElementById("newClient");
+	  // Get the output text
+	  var text = document.getElementById("text1");
+	// If the checkbox is checked, display the output text
+	  var table = document.getElementById("accTable");
+	  var tr = table.getElementsByTagName("tr");
+
+	  var accFlagFilter = 0;
+	  
+	  if (noСonditions.checked == true) {
+		//td = tr[1].getElementsByTagName("td")[0];
+		//td = td.innerText = "111";
+		//alert("noConditions");
+	  }
+
+	  if (spend.checked == true) {
+		accFlagFilter = accFlagFilter | 1
+		//alert(accFlagFilter);
+	  }
+	  if (newClient.checked == true) {
+		accFlagFilter = accFlagFilter | 2
+		//alert(accFlagFilter);
+	  }
+
+	  if (subscr.checked == true) {
+		accFlagFilter = accFlagFilter | 4
+		//alert(accFlagFilter);
+	  }
+
+          //alert(accFlagFilter);
+
+	  
+
+          for (i = 0; i < tr.length; i++) 
+	  {
+	    td = tr[i].getElementsByTagName("td")[0];
+	    if (td) {
+		  
+		  //if (checkBox.checked == true) {td.innerText = "none";}
+//                  if (checkBox.checked == true) {
+			tr[i].style.display = "none";
+			var accFlag = tr[i].getElementsByTagName("td")[5].innerText;
+			var accType = tr[i].getElementsByTagName("td")[6].innerText;
+			if (accFlag != 0 && (accFlag & accFlagFilter) == accFlag) 
+			{
+			  tr[i].style.display = "";
+			}
+//                        else {tr[i].style.display = "none";}
+//		  }
+		    
+
+	     
+		       // else {
+			 if (accFlag == 0 && noСonditions.checked == true) {
+			   tr[i].style.display = "";
+			 }
+			 if (daily.checked == false && accType == 1) {tr[i].style.display = "none"}
+			 if (minimal.checked == false && accType == 2) {tr[i].style.display = "none"}
+
+                       //   else {tr[i].style.display = "none";}
+                       // }
+	   }
+         }	  
+	   	 
+	  
+
+	  
+	  //if (checkBox.checked == true){
+	  //  text.style.display = "block";
+	  //} else {
+	  //  text.style.display = "none";
+	  //}
+      
+
+
+      }
+   
+      // Function to convert JSON data to HTML table
+      function convert() {
+         
+	 let jsonField = [
+	 "Банк",
+	 "Название вклада",
+	 "Начисление %",
+	 "Ставка",
+	 "Условия",
+	 "acc_flag",
+	 "acc_type"
+
+	 ];
+
+         // Sample JSON data
+         let jsonData = [
+		["ГАЗПРОМБАНК", "Накопительный счет", "Минимальный", "16.5", "Новый клиент", "2", "2" ],
+		["ПРОМСВЯЗЬБАНК", "Акцент на процент", "Ежедневный", "16.0", "С тратами 100000.0", "1", "1" ],
+		["Альфа-Банк", "Альфа-Счёт", "Минимальный", "16.0", "Новый клиент", "2", "2" ],
+		["Банк ВТБ", "ВТБ - Счет", "Ежедневный", "16.0", "Новый клиент", "2", "1" ],
+		["ПРОМСВЯЗЬБАНК", "Про запас", "Минимальный", "16.0", "Новый клиент", "2", "2" ],
+		["ГАЗПРОМБАНК", "Ежедневный процент", "Ежедневный", "16.0", "Новый клиент и подписка", "6", "1" ],
+		["ПРОМСВЯЗЬБАНК", "Акцент на процент", "Ежедневный", "15.0", "С тратами 75000.0", "1", "1" ],
+		["ГАЗПРОМБАНК", "Простой процент", "Минимальный", "14.0", "Без условий", "0", "2" ],
+		["ПРОМСВЯЗЬБАНК", "Акцент на процент", "Ежедневный", "14.0", "С тратами 50000.0", "1", "1" ],
+		["ГАЗПРОМБАНК", "Ежедневный процент", "Ежедневный", "14.0", "Новый клиент", "2", "1" ],
+		["ПРОМСВЯЗЬБАНК", "Акцент на процент", "Ежедневный", "13.0", "С тратами 30000.0", "1", "1" ],
+		["ГАЗПРОМБАНК", "Ежедневный процент", "Ежедневный", "13.0", "С подпиской и траты 10000.0", "5", "1" ],
+		["ПРОМСВЯЗЬБАНК", "Безлимитный", "Минимальный", "12.5", "Без условий", "0", "2" ],
+		["ПРОМСВЯЗЬБАНК", "Акцент на процент", "Ежедневный", "12.0", "С тратами 10000.0", "1", "1" ],
+		["ГАЗПРОМБАНК", "Ежедневный процент", "Ежедневный", "11.5", "С подпиской", "4", "1" ],
+		["Альфа-Банк", "Альфа-Счёт", "Минимальный", "11.0", "С тратами 20000.0", "1", "2" ],
+		["ГАЗПРОМБАНК", "Ежедневный процент", "Ежедневный", "11.0", "С тратами 10000.0", "1", "1" ],
+		["ГАЗПРОМБАНК", "Накопительный счет", "Минимальный", "10.0", "Без условий", "0", "2" ],
+		["Банк ВТБ", "ВТБ - Счет", "Ежедневный", "10.0", "С тратами 10000.0", "1", "1" ],
+		["ГАЗПРОМБАНК", "Ежедневный процент", "Ежедневный", "9.5", "Без условий", "0", "1" ],
+		["ПРОМСВЯЗЬБАНК", "Акцент на процент", "Ежедневный", "9.0", "Без условий", "0", "1" ],
+		["ПРОМСВЯЗЬБАНК", "Про запас", "Минимальный", "9.0", "Без условий", "0", "2" ],
+		["Банк ВТБ", "ВТБ - Счет", "Ежедневный", "7.0", "Без условий", "0", "1" ],
+		["Альфа-Банк", "Альфа-Счёт", "Минимальный", "4.0", "Без условий", "0", "2" ]
+         ];
+         
+         // Get the container element where the table will be inserted
+         let container = document.getElementById("container");
+         
+         // Create the table element
+         let table = document.createElement("table");
+	 table.id = "accTable";
+         
+         // Get the keys (column names) of the first object in the JSON data
+         //let cols = Object.keys(jsonData[0]);
+         
+         // Create the header element
+         let thead = document.createElement("thead");
+         let tr = document.createElement("tr");
+         
+         // Loop through the column names and create header cells
+         jsonField.forEach((item) => {
+            let th = document.createElement("th");
+            th.innerText = item; // Set the column name as the text of the header cell
+            tr.appendChild(th); // Append the header cell to the header row
+         });
+         thead.appendChild(tr); // Append the header row to the header
+         table.append(tr) // Append the header to the table
+         
+         // Loop through the JSON data and create table rows
+         jsonData.forEach((item) => {
+            let tr = document.createElement("tr");
+            
+            // Get the values of the current object in the JSON data
+            //let vals = Object.values(item);
+            let vals = item;            
+            // Loop through the values and create table cells
+            vals.forEach((elem) => {
+               let td = document.createElement("td");
+               td.innerText = elem; // Set the value as the text of the table cell
+               tr.appendChild(td); // Append the table cell to the table row
+            });
+            table.appendChild(tr); // Append the table row to the table
+         });
+         container.appendChild(table) // Append the table to the container element
+      }
+   </script>
+</body>
+</html>
